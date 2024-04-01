@@ -1,0 +1,9 @@
+SampleID,Factor,Replicate,Peaks,bamReads
+ENCFF662DYG,HSC,1,data/input_data/1_hsc/ENCFF662DYG.merged.bed,data/input_data/1_hsc/ENCFF662DYG.bam
+ENCFF255IVU,HSC,2,data/input_data/1_hsc/ENCFF255IVU.merged.bed,data/input_data/1_hsc/ENCFF255IVU.bam
+ENCFF832UUS,CMP,1,data/input_data/2_cmp/ENCFF832UUS.merged.bed,data/input_data/2_cmp/ENCFF832UUS.bam
+ENCFF343PTQ,CMP,2,data/input_data/2_cmp/ENCFF343PTQ.merged.bed,data/input_data/2_cmp/ENCFF343PTQ.bam
+ENCFF796ZSB,CFUE,1,data/input_data/3_cfue/ENCFF796ZSB.merged.bed,data/input_data/3_cfue/ENCFF796ZSB.bam
+ENCFF599ZDJ,CFUE,2,data/input_data/3_cfue/ENCFF599ZDJ.merged.bed,data/input_data/3_cfue/ENCFF599ZDJ.bam
+ENCFF181AMY,Erythroblast,1,data/input_data/4_erythroblast/ENCFF181AMY.merged.bed,data/input_data/4_erythroblast/ENCFF181AMY.bam
+ENCFF616EWK,Erythroblast,2,data/input_data/4_erythroblast/ENCFF616EWK.merged.bed,data/input_data/4_erythroblast/ENCFF616EWK.bam

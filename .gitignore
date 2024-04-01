@@ -1,4 +1,5 @@
 data/ref/*
+data/input_data/*/*.bam*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
