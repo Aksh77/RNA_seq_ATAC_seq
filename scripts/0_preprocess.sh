@@ -1,18 +1,18 @@
-# # preprocess the data for the analysis
-# for bigbed in $(ls data/input_data/*/*.bigBed); do
-# 	# convert bigbed to bed
-# 	bed=$(echo $bigbed | sed 's/.bigBed/.bed/')
-# 	utils/bigBedToBed $bigbed $bed
+# preprocess the data for the analysis
+for bigbed in $(ls data/input_data/*/*.bigBed); do
+	# convert bigbed to bed
+	bed=$(echo $bigbed | sed 's/.bigBed/.bed/')
+	utils/bigBedToBed $bigbed $bed
 
-# 	# merge overlapping regions in bed
-# 	bed_merged=$(echo $bed | sed 's/.bed/.merged.bed/')
-# 	cat $bed | awk -F '\t' -v OFS='\t' '{print $1,$2,$3-1,$4}' > data/bed.tmp
-# 	bedtools merge -i data/bed.tmp -c 4 -o mean > data/bed.merged.tmp
-# 	cat data/bed.merged.tmp | awk -F '\t' -v OFS='\t' '{print $1,$2,$3+1,$4}' > $bed_merged
+	# merge overlapping regions in bed
+	bed_merged=$(echo $bed | sed 's/.bed/.merged.bed/')
+	cat $bed | awk -F '\t' -v OFS='\t' '{print $1,$2,$3-1,$4}' > data/bed.tmp
+	bedtools merge -i data/bed.tmp -c 4 -o mean > data/bed.merged.tmp
+	cat data/bed.merged.tmp | awk -F '\t' -v OFS='\t' '{print $1,$2,$3+1,$4}' > $bed_merged
 
-# 	# remove temp files
-# 	rm data/bed.tmp data/bed.merged.tmp
-# done
+	# remove temp files
+	rm data/bed.tmp data/bed.merged.tmp
+done
 
 # get consensus peaks from replicates for each cell line
 for dir in $(ls -d data/input_data/*); do
