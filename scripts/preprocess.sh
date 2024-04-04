@@ -26,7 +26,7 @@ for dir in $(ls -d data/input_data/*); do
 	out_dir=data/consensus_peaks
 	mkdir -p $out_dir
 
-	# intersect bed files in the same subdirectory to get consensus peaks
+	# intersect replicates to get consensus peaks
 	bed1=$(ls $dir/*.merged.bed | head -n 1)
 	bed2=$(ls $dir/*.merged.bed | tail -n 1)
 	consensus_bed=$out_dir/${seq}_consensus_peaks.bed
