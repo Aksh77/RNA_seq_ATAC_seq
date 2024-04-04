@@ -1,5 +1,4 @@
-# Description: Preprocess the data for the analysis
-
+# preprocess the data for the analysis
 for bigbed in $(ls data/input_data/*/*.bigBed); do
 	# convert bigbed to bed
 	bed=$(echo $bigbed | sed 's/.bigBed/.bed/')
@@ -22,6 +21,12 @@ for bigbed in $(ls data/input_data/*/*.bigBed); do
 	bigwig=$(echo $bedgraph | sed 's/.bedgraph/.bigWig/')
 	utils/bedGraphToBigWig $bedgraph utils/mm10.chrom.sizes.txt $bigwig
 
+	# get average signal for each peak for downstream analysis
+	bed_peak_list=$(echo $bed_merged | sed 's/.merged.bed/.peak_list.bed/')	
+	cat $bed_merged | awk -F '\t' -v OFS='\t' '{print $1, $2, $3, $1"_"$2"_"$3}' > $bed_peak_list
+	tab_file=$(echo $bigwig | sed 's/.bigWig/.tab/')
+	utils/bigWigAverageOverBed $bigwig $bed_peak_list $tab_file
+
 done
 
 # get consensus peaks from replicates for each cell line
@@ -41,4 +46,3 @@ for dir in $(ls -d data/input_data/*); do
 	bed2=$(ls $dir/*.bed | tail -n 1)
 	bedtools intersect -a $bed1 -b $bed2  -f 0.50 -r > $out_dir/${seq}_consensus_peaks.bed
 done
-
