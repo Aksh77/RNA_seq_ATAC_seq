@@ -21,12 +21,17 @@ for bigbed in $(ls data/input_data/*/*.bigBed); do
 	bigwig=$(echo $bedgraph | sed 's/.bedgraph/.bigWig/')
 	utils/bedGraphToBigWig $bedgraph utils/mm10.chrom.sizes.txt $bigwig
 
+	# create output file path for tab file
+	out_file=$(echo $bigwig | sed 's/data\/input_data/data\/output_data/')
+	out_file=$(echo $out_file | sed 's/.bigWig/.tab/')
+	echo $out_file
+	mkdir -p $(dirname $out_file)
+
 	# get average signal for each peak for downstream analysis
 	bed_peak_list=$(echo $bed_merged | sed 's/.merged.bed/.peak_list.bed/')	
+	tab_file=$(echo $bigwig | sed 's/.merged.bed/.tab/')
 	cat $bed_merged | awk -F '\t' -v OFS='\t' '{print $1, $2, $3, $1"_"$2"_"$3}' > $bed_peak_list
-	tab_file=$(echo $bigwig | sed 's/.bigWig/.tab/')
-	utils/bigWigAverageOverBed $bigwig $bed_peak_list $tab_file
-
+	utils/bigWigAverageOverBed $bigwig $bed_peak_list $out_file
 done
 
 # get consensus peaks from replicates for each cell line
