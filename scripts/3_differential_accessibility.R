@@ -39,3 +39,20 @@ d.eda = estimateGLMCommonDisp(d, design = design)
 fit = glmFit(d.eda, design = design)
 lrt.EDASeq = glmLRT(fit, coef = 2)
 DA_res=as.data.frame(topTags(lrt.EDASeq, nrow(lrt.EDASeq$table)))
+DA_res$Geneid = rownames(DA_res)
+DA.res.coords = left_join(DA_res,cnt_table[1:4],by="Geneid")
+
+# Filter for significant peaks
+DA.res.coords = DA.res.coords[DA_res$FDR < 0.05,]
+
+# Save results
+outdir = "data/output_data/differential_accessibility"
+if (file.exists(outdir) == FALSE) {
+  dir.create(outdir,recursive=TRUE)
+}
+setwd(outdir)
+result_file = "hsc_vs_cfue.tsv"
+write.table(DA.res.coords, result_file, quote = FALSE, sep = "\t",
+            eol = "\n", na = "NA", dec = ".", row.names = FALSE,
+            col.names = TRUE, fileEncoding = "")
+
