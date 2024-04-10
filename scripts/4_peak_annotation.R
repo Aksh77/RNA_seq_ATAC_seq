@@ -12,6 +12,8 @@ library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
 
 # Annotate peaks with closest genomic features
+# select only peaks in differentially accessible regions
+peaks.gr = GRanges(seqnames=DA.res.coords$Chr, ranges=IRanges(DA.res.coords$Start, DA.res.coords$End), strand=DA.res.coords$Strand)
 bed.annot = annotatePeak(peaks.gr, tssRegion=c(-3000, 3000),TxDb=txdb, annoDb="org.Mm.eg.db")
 annot_peaks = as.data.frame(bed.annot)
 

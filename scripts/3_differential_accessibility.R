@@ -42,7 +42,7 @@ DA_res=as.data.frame(topTags(lrt.EDASeq, nrow(lrt.EDASeq$table)))
 DA_res$Geneid = rownames(DA_res)
 DA.res.coords = left_join(DA_res,cnt_table[1:4],by="Geneid")
 
-# Filter for significant peaks
+# Filter for significant peaks with FDR < 0.05
 DA.res.coords = DA.res.coords[DA_res$FDR < 0.05,]
 
 # Save results
