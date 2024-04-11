@@ -56,3 +56,8 @@ write.table(DA.res.coords, result_file, quote = FALSE, sep = "\t",
             eol = "\n", na = "NA", dec = ".", row.names = FALSE,
             col.names = TRUE, fileEncoding = "")
 
+# make volcano plot
+png("hsc_vs_cfue_volcano.png", width=5, height=5)
+plot(DA_res$logFC, -log10(DA_res$FDR), pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
+     xlab="log2 fold change", ylab="-log10 FDR", main="HSC vs CFUE differential accessibility")
+dev.off()
