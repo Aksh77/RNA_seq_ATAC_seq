@@ -11,5 +11,19 @@ for dir in $(ls -d data/input_data/*); do
 	rep2=$(ls $dir/*.bam | tail -n 1)
 	peak_dir=data/peaks/$seq
 	mkdir -p $peak_dir
-	macs2 callpeak -t $rep1 $rep2 -f BAM -g mm -n $seq --outdir $peak_dir
+	macs2 callpeak -t $rep1 -f BAM -g mm -n ${seq}_1 --outdir $peak_dir
+	macs2 callpeak -t $rep2 -f BAM -g mm -n ${seq}_2 --outdir $peak_dir
 done
+
+# get consensus peaks from results of the replicates
+SEQS="hsc cmp cfue erythroblast"
+for seq in $SEQS; do
+	seq=hsc
+	dir=data/peaks/${seq}
+	rep1=${dir}/${seq}_1_peaks.narrowPeak
+	rep2=${dir}/${seq}_2_peaks.narrowPeak
+	consensus=${dir}/${seq}_peaks.narrowPeak
+	bedtools intersect -a $rep1 -b $rep2 -f 0.5 -r > $consensus
+done
+
+

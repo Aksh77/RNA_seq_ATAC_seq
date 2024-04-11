@@ -1,5 +1,5 @@
 Status	data/input_data/1_hsc/ENCFF255IVU.bam	data/input_data/1_hsc/ENCFF662DYG.bam	data/input_data/3_cfue/ENCFF599ZDJ.bam	data/input_data/3_cfue/ENCFF796ZSB.bam
-Assigned	24506677	19477727	23781499	19583909
+Assigned	22733598	17697027	16971058	13881384
 Unassigned_Unmapped	7633463	19293750	15398033	17948965
 Unassigned_Read_Type	0	0	0	0
 Unassigned_Singleton	0	0	0	0
@@ -10,6 +10,6 @@ Unassigned_Duplicate	0	0	0	0
 Unassigned_MultiMapping	0	0	0	0
 Unassigned_Secondary	0	0	0	0
 Unassigned_NonSplit	0	0	0	0
-Unassigned_NoFeatures	39371288	45115858	61846249	43511500
-Unassigned_Overlapping_Length	92183	89556	130752	104958
-Unassigned_Ambiguity	285	277	711	577
+Unassigned_NoFeatures	41139473	46899369	68656948	49210407
+Unassigned_Overlapping_Length	97362	87022	131205	109153
+Unassigned_Ambiguity	0	0	0	0
