@@ -1,0 +1,1 @@
+This subfolder contains a list of genes identified as differentially expressed between the six cell lines, using both DEseq2 and limma-voom
