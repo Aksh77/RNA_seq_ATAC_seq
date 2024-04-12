@@ -7,10 +7,10 @@ library(wesanderson)
 library(Hmisc)
 library(dplyr)
 
-ff = FaFile("data/ref/mm10.fa")
+ff = FaFile("ATAC_seq/data/ref/mm10.fa")
 
 # Read count data and define experimental groups
-count_file = 'data/output_data/featureCounts/hsc_cfue/hsc_cfue_peaks.counts'
+count_file = 'ATAC_seq/data/output_data/featureCounts/hsc_cfue/hsc_cfue_peaks.counts'
 cnt_table = read.table(count_file, sep="\t", header=TRUE, blank.lines.skip=TRUE)
 rownames(cnt_table)=cnt_table$Geneid
 colnames(cnt_table)=c("Geneid","Chr","Start","End","Strand","Length","HSC1","HSC2","CFUE1","CFUE2")
@@ -46,7 +46,7 @@ DA.res.coords = left_join(DA_res,cnt_table[1:4],by="Geneid")
 DA.res.coords = DA.res.coords[DA_res$FDR < 0.05,]
 
 # Save results
-outdir = "data/output_data/differential_accessibility"
+outdir = "ATAC_seq/data/output_data/differential_accessibility"
 if (file.exists(outdir) == FALSE) {
   dir.create(outdir,recursive=TRUE)
 }
@@ -67,3 +67,4 @@ pdf("hsc_vs_cfue_MA.pdf", width=5, height=5)
 plot(DA_res$logCPM, DA_res$logFC, pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
      xlab="Average log2 counts", ylab="log2 fold change", main="HSC vs CFUE differential accessibility")
 dev.off()
+

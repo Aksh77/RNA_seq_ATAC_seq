@@ -5,6 +5,12 @@ ATAC_seq/misc/*
 # temp files
 *.tmp
 
+# R studio files
+.Rproj.user
+.RData
+.Rhistory
+*.Rproj
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
