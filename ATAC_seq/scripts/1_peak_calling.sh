@@ -18,7 +18,6 @@ done
 # get consensus peaks from results of the replicates
 SEQS="hsc cmp cfue erythroblast"
 for seq in $SEQS; do
-	seq=hsc
 	dir=ATAC_seq/data/peaks/${seq}
 	rep1=${dir}/${seq}_1_peaks.narrowPeak
 	rep2=${dir}/${seq}_2_peaks.narrowPeak

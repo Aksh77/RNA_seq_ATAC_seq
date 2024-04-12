@@ -1,4 +1,4 @@
-Geneid	Chr	Start	End	Strand	Length	data/input_data/1_hsc/ENCFF255IVU.bam	data/input_data/1_hsc/ENCFF662DYG.bam	data/input_data/3_cfue/ENCFF599ZDJ.bam	data/input_data/3_cfue/ENCFF796ZSB.bam
+Geneid	Chr	Start	End	Strand	Length	ATAC_seq/data/input_data/hsc/ENCFF255IVU.bam	ATAC_seq/data/input_data/hsc/ENCFF662DYG.bam	ATAC_seq/data/input_data/cfue/ENCFF599ZDJ.bam	ATAC_seq/data/input_data/cfue/ENCFF796ZSB.bam
 hsc_cfue_merged_1	chr1	4351967	4352074	.	108	24	23	0	0
 hsc_cfue_merged_2	chr1	4417974	4418182	.	209	85	58	1	2
 hsc_cfue_merged_3	chr1	4427409	4427598	.	190	42	38	3	1
