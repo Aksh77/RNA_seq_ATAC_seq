@@ -1,5 +1,5 @@
 Status	ATAC_seq/data/input_data/hsc/ENCFF255IVU.bam	ATAC_seq/data/input_data/hsc/ENCFF662DYG.bam	ATAC_seq/data/input_data/cfue/ENCFF599ZDJ.bam	ATAC_seq/data/input_data/cfue/ENCFF796ZSB.bam
-Assigned	22733598	17697027	16971058	13881384
+Assigned	6633327	5587840	7130619	5899170
 Unassigned_Unmapped	7633463	19293750	15398033	17948965
 Unassigned_Read_Type	0	0	0	0
 Unassigned_Singleton	0	0	0	0
@@ -10,6 +10,6 @@ Unassigned_Duplicate	0	0	0	0
 Unassigned_MultiMapping	0	0	0	0
 Unassigned_Secondary	0	0	0	0
 Unassigned_NonSplit	0	0	0	0
-Unassigned_NoFeatures	41139473	46899369	68656948	49210407
-Unassigned_Overlapping_Length	97362	87022	131205	109153
-Unassigned_Ambiguity	0	0	0	0
+Unassigned_NoFeatures	40700933	46416958	63769333	45072186
+Unassigned_Overlapping_Length	97032	88852	126502	104460
+Unassigned_Ambiguity	16539141	12589768	14732757	12125128

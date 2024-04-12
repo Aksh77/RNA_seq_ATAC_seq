@@ -1,0 +1,15 @@
+Status	ATAC_seq/data/input_data/cfue/ENCFF599ZDJ.bam	ATAC_seq/data/input_data/cfue/ENCFF796ZSB.bam	ATAC_seq/data/input_data/erythroblast/ENCFF199ZJX.bam	ATAC_seq/data/input_data/erythroblast/ENCFF535OJU.bam
+Assigned	2928337	2408624	3186728	2215884
+Unassigned_Unmapped	15398033	17948965	11290227	7761964
+Unassigned_Read_Type	0	0	0	0
+Unassigned_Singleton	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0
+Unassigned_Chimera	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0
+Unassigned_Duplicate	0	0	0	0
+Unassigned_MultiMapping	0	0	0	0
+Unassigned_Secondary	0	0	0	0
+Unassigned_NonSplit	0	0	0	0
+Unassigned_NoFeatures	64186962	45348694	61135717	42282791
+Unassigned_Overlapping_Length	126310	104109	142979	97381
+Unassigned_Ambiguity	18517602	15339517	19823440	13805852

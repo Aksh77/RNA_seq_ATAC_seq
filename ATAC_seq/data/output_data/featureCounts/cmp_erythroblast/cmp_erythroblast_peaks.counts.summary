@@ -1,0 +1,15 @@
+Status	ATAC_seq/data/input_data/cmp/ENCFF620WGW.bam	ATAC_seq/data/input_data/cmp/ENCFF711QAL.bam	ATAC_seq/data/input_data/erythroblast/ENCFF199ZJX.bam	ATAC_seq/data/input_data/erythroblast/ENCFF535OJU.bam
+Assigned	7995815	8280786	5335682	3691995
+Unassigned_Unmapped	6913105	8319631	11290227	7761964
+Unassigned_Read_Type	0	0	0	0
+Unassigned_Singleton	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0
+Unassigned_Chimera	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0
+Unassigned_Duplicate	0	0	0	0
+Unassigned_MultiMapping	0	0	0	0
+Unassigned_Secondary	0	0	0	0
+Unassigned_NonSplit	0	0	0	0
+Unassigned_NoFeatures	38007307	42354486	59858341	41374432
+Unassigned_Overlapping_Length	151732	154168	151424	101783
+Unassigned_Ambiguity	16458023	17044749	18943417	13233698

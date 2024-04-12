@@ -1,0 +1,15 @@
+Status	ATAC_seq/data/input_data/cmp/ENCFF620WGW.bam	ATAC_seq/data/input_data/cmp/ENCFF711QAL.bam	ATAC_seq/data/input_data/cfue/ENCFF599ZDJ.bam	ATAC_seq/data/input_data/cfue/ENCFF796ZSB.bam
+Assigned	9581329	9863303	5662771	4591865
+Unassigned_Unmapped	6913105	8319631	15398033	17948965
+Unassigned_Read_Type	0	0	0	0
+Unassigned_Singleton	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0
+Unassigned_Chimera	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0
+Unassigned_Duplicate	0	0	0	0
+Unassigned_MultiMapping	0	0	0	0
+Unassigned_Secondary	0	0	0	0
+Unassigned_NonSplit	0	0	0	0
+Unassigned_NoFeatures	38020489	42366464	62912474	44396551
+Unassigned_Overlapping_Length	151683	154304	134932	109107
+Unassigned_Ambiguity	14859376	15450118	17049034	14103421
