@@ -9,8 +9,13 @@ library(dplyr)
 
 ff = FaFile("ATAC_seq/data/ref/mm10.fa")
 
+# read command line arguments
+args = commandArgs(trailingOnly=TRUE)
+contrast = args[1]
+
 # Read count data and define experimental groups
-count_file = 'ATAC_seq/data/output_data/featureCounts/hsc_cfue/hsc_cfue_peaks.counts'
+count_file = paste("ATAC_seq/data/output_data/featureCounts/",contrast,"/",contrast,"_peaks.counts", sep="")
+print(count_file)
 cnt_table = read.table(count_file, sep="\t", header=TRUE, blank.lines.skip=TRUE)
 rownames(cnt_table)=cnt_table$Geneid
 colnames(cnt_table)=c("Geneid","Chr","Start","End","Strand","Length","HSC1","HSC2","CFUE1","CFUE2")
@@ -51,20 +56,22 @@ if (file.exists(outdir) == FALSE) {
   dir.create(outdir,recursive=TRUE)
 }
 setwd(outdir)
-result_file = "hsc_vs_cfue.tsv"
+result_file = paste(contrast,"_differential_accessibility.tsv", sep="")
 write.table(DA.res.coords, result_file, quote = FALSE, sep = "\t",
             eol = "\n", na = "NA", dec = ".", row.names = FALSE,
             col.names = TRUE, fileEncoding = "")
 
 # make volcano plot
-pdf("hsc_vs_cfue_volcano.pdf", width=5, height=5)
+volcano_plot=paste(contrast,"_volcano.pdf", sep="")
+pdf(volcano_plot, width=5, height=5)
 plot(DA_res$logFC, -log10(DA_res$FDR), pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
-     xlab="log2 fold change", ylab="-log10 FDR", main="HSC vs CFUE differential accessibility")
+     xlab="log2 fold change", ylab="-log10 FDR")
 dev.off()
 
 # make an MA plot
-pdf("hsc_vs_cfue_MA.pdf", width=5, height=5)
+ma_plot=paste(contrast,"_MA.pdf", sep="")
+pdf(ma_plot, width=5, height=5)
 plot(DA_res$logCPM, DA_res$logFC, pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
-     xlab="Average log2 counts", ylab="log2 fold change", main="HSC vs CFUE differential accessibility")
+     xlab="Average log2 counts", ylab="log2 fold change")
 dev.off()
 
