@@ -9,8 +9,8 @@ parser.add_argument('--contrast', type=str, help='Specify contrast in the format
 contrast = parser.parse_args().contrast
 
 # get paths to differential accessibility, peak annotation, and gene expression data
-DIFF_ACC = f"ATAC_seq/data/output_data/differential_accessibility/{contrast}_differential_accessibility.tsv"
-PEAK_ANNOT = f"ATAC_seq/data/output_data/peak_annotation/{contrast}_annotated_peaks.tsv"
+DIFF_ACC = f"ATAC_seq/data/output_data/differential_accessibility/{contrast}/{contrast}_differential_accessibility.tsv"
+PEAK_ANNOT = f"ATAC_seq/data/output_data/peak_annotation/{contrast}/{contrast}_annotated_peaks.tsv"
 GENE_EXP = f"ATAC_seq/data/output_data/gene_expression/{contrast}_gene_exp.csv"
 
 # read differential chromatin accessibility data
