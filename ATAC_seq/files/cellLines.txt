@@ -1,0 +1,9 @@
+cell lines (1=HSC, 2=CMP, 3=CFUE, 4=Erythroblast)
+13, 14, 12, 24, 34, 23
+
+1. HSC and CFUE
+2. HSC and Erythroblast
+3. HSC and CMP
+4. CMP and Erythroblast
+5. CFUE and Erythroblast
+6. CMP and CFUE

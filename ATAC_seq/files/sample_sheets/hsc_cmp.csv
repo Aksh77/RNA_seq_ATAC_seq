@@ -1,0 +1,5 @@
+SampleID,Factor,Replicate,Peaks,bamReads
+ENCFF662DYG,HSC,1,ATAC_seq/data/input_data/hsc/ENCFF662DYG.bed,ATAC_seq/data/input_data/hsc/ENCFF250YAL.bam
+ENCFF255IVU,HSC,2,ATAC_seq/data/input_data/hsc/ENCFF255IVU.bed,ATAC_seq/data/input_data/hsc/ENCFF958EPJ.bam
+ENCFF832UUS,CMP,1,ATAC_seq/data/input_data/cmp/ENCFF832UUS.bed,ATAC_seq/data/input_data/cmp/ENCFF711QAL.bam
+ENCFF343PTQ,CMP,2,ATAC_seq/data/input_data/cmp/ENCFF343PTQ.bed,ATAC_seq/data/input_data/cmp/ENCFF620WGW.bam
