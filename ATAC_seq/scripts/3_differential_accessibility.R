@@ -10,13 +10,28 @@ library(dplyr)
 ff = FaFile("ATAC_seq/data/ref/mm10.fa")
 
 # read command line arguments
+# Usage: Rscript 3_differential_accessibility.R hsc_cfue
 args = commandArgs(trailingOnly=TRUE)
 contrast = args[1]
+
+# make directory for saving results
+outdir = paste("ATAC_seq/data/output_data/differential_accessibility/",contrast, sep="")
+if (file.exists(outdir) == FALSE) {
+  dir.create(outdir,recursive=TRUE)
+}
 
 # Read count data and define experimental groups
 count_file = paste("ATAC_seq/data/output_data/featureCounts/",contrast,"/",contrast,"_peaks.counts", sep="")
 print(count_file)
 cnt_table = read.table(count_file, sep="\t", header=TRUE, blank.lines.skip=TRUE)
+
+# Filter out peaks with low counts
+cnt_table = cnt_table[rowMeans(cnt_table[,c(7:10)]) > 15,]
+
+# Filter out sex chromosomes and mitochondrial peaks
+cnt_table = cnt_table[!grepl("chrX|chrY|chrM", cnt_table$Chr),]
+
+# Prepare count data for edgeR
 rownames(cnt_table)=cnt_table$Geneid
 colnames(cnt_table)=c("Geneid","Chr","Start","End","Strand","Length","HSC1","HSC2","CFUE1","CFUE2")
 groups = factor(c(rep("HSC",2),rep("CFUE",2)))
@@ -47,31 +62,32 @@ DA_res=as.data.frame(topTags(lrt.EDASeq, nrow(lrt.EDASeq$table)))
 DA_res$Geneid = rownames(DA_res)
 DA.res.coords = left_join(DA_res,cnt_table[1:4],by="Geneid")
 
+# make volcano plot
+volcano_plot=paste(outdir,"/",contrast,"_volcano.png", sep="")
+png(volcano_plot, width = 1000, height = 1000, pointsize = 30)
+plot(DA_res$logFC, -log10(DA_res$FDR), pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
+     xlab="log2 fold change", ylab="-log10 FDR", cex=0.5)
+dev.off()
+
+# make an MA plot
+ma_plot=paste(outdir,"/",contrast,"_MA.png", sep="")
+png(ma_plot, width = 1000, height = 1000, pointsize = 30)
+plot(DA_res$logCPM, DA_res$logFC, pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
+     xlab="Average log2 counts", ylab="log2 fold change", cex=0.5)
+dev.off()
+
+# make PCA plot 
+pca_plot=paste(outdir,"/",contrast,"_PCA.png", sep="")
+png(pca_plot, width = 1000, height = 1000, pointsize = 30)
+plotMDS(d.eda, labels=groups)
+dev.off()
+
 # Filter for significant peaks with FDR < 0.05
 DA.res.coords = DA.res.coords[DA_res$FDR < 0.05,]
 
 # Save results
-outdir = "ATAC_seq/data/output_data/differential_accessibility"
-if (file.exists(outdir) == FALSE) {
-  dir.create(outdir,recursive=TRUE)
-}
-setwd(outdir)
-result_file = paste(contrast,"_differential_accessibility.tsv", sep="")
+result_file = paste(outdir,"/",contrast,"_differential_accessibility.tsv", sep="")
 write.table(DA.res.coords, result_file, quote = FALSE, sep = "\t",
             eol = "\n", na = "NA", dec = ".", row.names = FALSE,
             col.names = TRUE, fileEncoding = "")
-
-# make volcano plot
-volcano_plot=paste(contrast,"_volcano.pdf", sep="")
-pdf(volcano_plot, width=5, height=5)
-plot(DA_res$logFC, -log10(DA_res$FDR), pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
-     xlab="log2 fold change", ylab="-log10 FDR")
-dev.off()
-
-# make an MA plot
-ma_plot=paste(contrast,"_MA.pdf", sep="")
-pdf(ma_plot, width=5, height=5)
-plot(DA_res$logCPM, DA_res$logFC, pch=20, col=ifelse(DA_res$FDR < 0.05, "red", "black"),
-     xlab="Average log2 counts", ylab="log2 fold change")
-dev.off()
 

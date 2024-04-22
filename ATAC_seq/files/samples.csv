@@ -1,5 +1,0 @@
-SampleID,Factor,Replicate,Peaks,bamReads
-ENCFF662DYG,HSC,1,data/input_data/1_hsc/ENCFF662DYG.merged.bed,data/input_data/1_hsc/ENCFF662DYG.bam
-ENCFF255IVU,HSC,2,data/input_data/1_hsc/ENCFF255IVU.merged.bed,data/input_data/1_hsc/ENCFF255IVU.bam
-ENCFF796ZSB,CFUE,1,data/input_data/3_cfue/ENCFF796ZSB.merged.bed,data/input_data/3_cfue/ENCFF796ZSB.bam
-ENCFF599ZDJ,CFUE,2,data/input_data/3_cfue/ENCFF599ZDJ.merged.bed,data/input_data/3_cfue/ENCFF599ZDJ.bam

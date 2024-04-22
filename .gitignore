@@ -1,6 +1,7 @@
-ATAC_seq/data/ref/*
-ATAC_seq/data/input_data/*/*.bam*
-ATAC_seq/misc/*
+*/data/ref/*
+*/data/input_data/*
+*/misc/*
+ATAC_seq_analysis/*
 
 # temp files
 *.tmp
