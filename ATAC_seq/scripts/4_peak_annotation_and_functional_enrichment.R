@@ -16,19 +16,27 @@ txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
 args = commandArgs(trailingOnly=TRUE)
 contrast = args[1]
 
-# Annotate peaks in in differentially accessible regions with closest genomic features
-DA.res.coords = read.table(paste("ATAC_seq/data/output_data/differential_accessibility/",contrast,"_differential_accessibility.tsv", sep=""), sep="\t", header=TRUE)
+# make directory for saving peak annotation results
+outdir = paste("ATAC_seq/data/output_data/peak_annotation/",contrast, sep="")
+if (file.exists(outdir) == FALSE) {
+  dir.create(outdir,recursive=TRUE)
+}
+
+# make directory for saving functional enrichment results
+func_outdir = paste("ATAC_seq/data/output_data/functional_enrichment/",contrast, sep="")
+if (file.exists(func_outdir) == FALSE) {
+  dir.create(func_outdir,recursive=TRUE)
+}
+
+# Annotate peaks in in differentially accessible regions with closest genomic featuresdiff_acc_file =
+diff_acc_file = paste("ATAC_seq/data/output_data/differential_accessibility/",contrast,"/",contrast,"_differential_accessibility.tsv", sep="")
+DA.res.coords = read.table(diff_acc_file, sep="\t", header=TRUE)
 peaks.gr = GRanges(seqnames=DA.res.coords$Chr, ranges=IRanges(DA.res.coords$Start, DA.res.coords$End), strand=DA.res.coords$Strand)
 bed.annot = annotatePeak(peaks.gr, tssRegion=c(-3000, 3000),TxDb=txdb, annoDb="org.Mm.eg.db")
 annot_peaks = as.data.frame(bed.annot)
 
 # Save to file
-outdir = "ATAC_seq/data/output_data/peak_annotation"
-if (file.exists(outdir) == FALSE) {
-  dir.create(outdir,recursive=TRUE)
-}
-setwd(outdir)
-result_file = paste(contrast,"_annotated_peaks.tsv", sep="")
+result_file = paste(outdir,"/",contrast,"_annotated_peaks.tsv", sep="")
 write.table(annot_peaks, result_file,
             append = FALSE,
             quote = FALSE,
@@ -38,13 +46,13 @@ write.table(annot_peaks, result_file,
             fileEncoding = "")
 
 # Visualise the annotation summary
-summary_plot = paste(contrast,"_annotated_peaks.pdf", sep="")
+summary_plot = paste(outdir,"/",contrast,"_annotated_peaks.pdf", sep="")
 pdf(summary_plot)
 upsetplot(bed.annot, vennpie=TRUE)
 dev.off()
 
 # Plot distribution of peaks relative to TSS
-tss_dist_plot = paste(contrast,"_dist_to_tss.pdf", sep="")
+tss_dist_plot = paste(outdir,"/",contrast,"_dist_to_tss.pdf", sep="")
 pdf(tss_dist_plot)
 plotDistToTSS(bed.annot, title="Distribution of ATAC-seq peaks loci\nrelative to TSS")
 dev.off()
@@ -57,12 +65,7 @@ pathway.reac[1:10,c(1:7,9)]
 pathway.GO <- enrichGO(as.data.frame(annot_peaks)$geneId, org.Mm.eg.db, ont = "MF")
 
 # Save results
-outdir = "../functional_enrichment"
-setwd(outdir)
-if (file.exists(outdir) == FALSE) {
-  dir.create(outdir,recursive=TRUE)
-}
-result_file = paste(contrast,"_enriched_pathways.tsv", sep="")
+result_file = paste(func_outdir,"/",contrast,"_enriched_GO.tsv", sep="")
 write.table(pathway.reac, result_file,
             append = FALSE,
             quote = FALSE,
@@ -70,4 +73,3 @@ write.table(pathway.reac, result_file,
             row.names = FALSE,
             col.names = TRUE,
             fileEncoding = "")
-
