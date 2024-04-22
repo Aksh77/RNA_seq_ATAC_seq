@@ -1,7 +1,7 @@
 */data/ref/*
 */data/input_data/*
 */misc/*
-ATAC_seq_analysis/*
+ATAC_seq_full/*
 
 # temp files
 *.tmp
