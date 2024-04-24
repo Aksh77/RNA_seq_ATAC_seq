@@ -1,5 +1,5 @@
 SampleID,Factor,Replicate,Peaks,bamReads
-ENCFF796ZSB,CFUE,1,ATAC_seq/data/input_data/cfue/ENCFF796ZSB.bed,ATAC_seq/data/input_data/cfue/ENCFF909QFQ.bam
-ENCFF599ZDJ,CFUE,2,ATAC_seq/data/input_data/cfue/ENCFF599ZDJ.bed,ATAC_seq/data/input_data/cfue/ENCFF780SSI.bam
 ENCFF181AMY,ERY,1,ATAC_seq/data/input_data/ery/ENCFF181AMY.bed,ATAC_seq/data/input_data/ery/ENCFF199ZJX.bam
 ENCFF616EWK,ERY,2,ATAC_seq/data/input_data/ery/ENCFF616EWK.bed,ATAC_seq/data/input_data/ery/ENCFF535OJU.bam
+ENCFF796ZSB,CFUE,1,ATAC_seq/data/input_data/cfue/ENCFF796ZSB.bed,ATAC_seq/data/input_data/cfue/ENCFF909QFQ.bam
+ENCFF599ZDJ,CFUE,2,ATAC_seq/data/input_data/cfue/ENCFF599ZDJ.bed,ATAC_seq/data/input_data/cfue/ENCFF780SSI.bam

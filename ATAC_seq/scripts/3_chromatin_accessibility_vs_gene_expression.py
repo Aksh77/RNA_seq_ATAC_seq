@@ -22,8 +22,7 @@ diff_acc = diff_acc[["Fold"]]
 
 # get genes near differentially accessible peaks
 peak_annot = pd.read_csv(PEAK_ANNOT, sep="\t")
-peak_annot["chr_start_end"] = peak_annot["seqnames"] + "_" + peak_annot["start"].astype(str) + "_" + peak_annot["end"].astype(str)
-peak_annot.set_index("chr_start_end", inplace=True)
+peak_annot.set_index("PeakID", inplace=True)
 peak_annot = peak_annot[["ENSEMBL", "SYMBOL", "annotation", "distanceToTSS", "annotation"]]
 
 # join differential accessibility data with peak annotation data

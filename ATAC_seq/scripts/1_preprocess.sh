@@ -3,7 +3,7 @@ for bigbed in $(ls ATAC_seq/data/input_data/*/*.bigBed)
 do
 	# convert bigbed to bed
 	bed=$(echo $bigbed | sed 's/.bigBed/.bed/')
-	utils/bigBedToBed $bigbed $bed
+	ATAC_seq/utils/bigBedToBed $bigbed $bed
 
 	# merge overlapping regions in bed
 	bed_merged=$(echo $bed | sed 's/.bed/.merged.bed/')
@@ -13,4 +13,12 @@ do
 
 	# remove temp files
 	rm ATAC_seq/data/bed.tmp ATAC_seq/data/bed.merged.tmp
+
+	# convert bed to bedgraph
+	bedgraph=$(echo $bed | sed 's/.bed/.bedgraph/')
+	cut -f1,2,3,4 $bed_merged | sort -k1,1 -k2,2n > $bedgraph
+
+	# convert bedgraph to bigwig
+	bigwig=$(echo $bedgraph | sed 's/.bedgraph/.bigWig/')
+	ATAC_seq/utils/bedGraphToBigWig $bedgraph ATAC_seq/utils/mm10.chrom.sizes.txt $bigwig
 done

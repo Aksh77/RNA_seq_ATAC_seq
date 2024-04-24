@@ -9,6 +9,7 @@ library(biomaRt)
 library(ReactomePA)
 library(ggupset)
 library(ggimage)
+library(EnhancedVolcano)
 library(org.Mm.eg.db)
 library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
@@ -58,6 +59,7 @@ png(volcano_plot,width=5,height=5,units="in",res=800, pointsize=8)
 dba.plotVolcano(dbObj)
 dev.off()
 
+
 # MA plot
 ma_plot = paste(diff_acc_outdir,"/",contrast,"_MA.png", sep="")
 png(ma_plot,width=5,height=5,units="in",res=800, pointsize=12)
@@ -81,9 +83,31 @@ if (file.exists(outdir) == FALSE) {
 # Annotate peaks in in differentially accessible regions with closest genomic featuresdiff_acc_file =
 diff_acc_file = paste("ATAC_seq/data/output_data/differential_accessibility/",contrast,"/",contrast,"_diff_acc.csv", sep="")
 res = read.table(diff_acc_file, sep=",", header=TRUE)
+
+# get the top 100 differentially accessible peaks by FDR for annotation
+top_peaks = res[order(res$FDR),][1:100,]
 peaks.gr = GRanges(seqnames=res$seqnames, ranges=IRanges(res$start, res$end), strand=res$strand)
 bed.annot = annotatePeak(peaks.gr, tssRegion=c(-3000, 3000),TxDb=txdb, annoDb="org.Mm.eg.db")
 annot_peaks = as.data.frame(bed.annot)
+
+# plot pie chart of genomic features
+feature_plot = paste(outdir,"/",contrast,"_genomic_features.png", sep="")
+png(feature_plot,width=5,height=5,units="in",res=800, pointsize=8)
+plotAnnoPie(bed.annot)
+dev.off()
+
+# merge differential accessibility and peak annotation using seqnames, start and end
+annot_peaks$PeakID = paste(annot_peaks$seqnames, annot_peaks$start, annot_peaks$end, sep="_")
+res = as.data.frame(res)
+res$PeakID = paste(res$seqnames, res$start, res$end, sep="_")
+annot_peaks = merge(annot_peaks, res, by="PeakID")
+
+# plot enhanced volcano plot
+labels = annot_peaks$SYMBOL
+enhanced_volcano_plot = paste(diff_acc_outdir,"/",contrast,"_enhanced_volcano.png", sep="")
+png(enhanced_volcano_plot,width=7,height=7,units="in",res=800, pointsize=8)
+EnhancedVolcano(annot_peaks, x = 'Fold', y = 'FDR', lab=labels)
+dev.off()
 
 # Save to file
 result_file = paste(outdir,"/",contrast,"_annotated_peaks.tsv", sep="")
@@ -126,10 +150,23 @@ write.table(pathway.reac, result_file,
             col.names = TRUE,
             fileEncoding = "")
 
+# get peaks with differential accessibility
+upregulated_peaks = annot_peaks[annot_peaks$FDR < 0.05 & annot_peaks$Fold > 0,]
+downregulated_peaks = annot_peaks[annot_peaks$FDR < 0.05 & annot_peaks$Fold < 0,]
+
 # Find enriched GO terms for Molecular Function
-pathway.GO_MF <- enrichGO(as.data.frame(annot_peaks)$geneId, org.Mm.eg.db, ont = "MF")
-result_file = paste(func_outdir,"/",contrast,"_enriched_GO_MF.tsv", sep="")
-write.table(pathway.GO_MF, result_file,
+upregulated_mf <- enrichGO(as.data.frame(upregulated_peaks)$geneId, org.Mm.eg.db, ont = "MF")
+result_file = paste(func_outdir,"/",contrast,"_enriched_GO_MF_upregulated.tsv", sep="")
+write.table(upregulated_mf, result_file,
+            append = FALSE,
+            quote = FALSE,
+            sep = "\t",
+            row.names = FALSE,
+            col.names = TRUE,
+            fileEncoding = "")
+downregulated_mf = enrichGO(as.data.frame(downregulated_peaks)$geneId, org.Mm.eg.db, ont = "MF")
+result_file = paste(func_outdir,"/",contrast,"_enriched_GO_MF_downregulated.tsv", sep="")
+write.table(downregulated_mf, result_file,
             append = FALSE,
             quote = FALSE,
             sep = "\t",
@@ -138,9 +175,18 @@ write.table(pathway.GO_MF, result_file,
             fileEncoding = "")
 
 # Find enriched GO terms for Biological Process
-pathway.GO_BP <- enrichGO(as.data.frame(annot_peaks)$geneId, org.Mm.eg.db, ont = "BP")
-result_file = paste(func_outdir,"/",contrast,"_enriched_GO_BP.tsv", sep="")
-write.table(pathway.GO_BP, result_file,
+upregulated_bp <- enrichGO(as.data.frame(upregulated_peaks)$geneId, org.Mm.eg.db, ont = "BP")
+result_file = paste(func_outdir,"/",contrast,"_enriched_GO_BP_upregulated.tsv", sep="")
+write.table(upregulated_bp, result_file,
+            append = FALSE,
+            quote = FALSE,
+            sep = "\t",
+            row.names = FALSE,
+            col.names = TRUE,
+            fileEncoding = "")
+downregulated_bp = enrichGO(as.data.frame(downregulated_peaks)$geneId, org.Mm.eg.db, ont = "BP")
+result_file = paste(func_outdir,"/",contrast,"_enriched_GO_BP_downregulated.tsv", sep="")
+write.table(downregulated_bp, result_file,
             append = FALSE,
             quote = FALSE,
             sep = "\t",
