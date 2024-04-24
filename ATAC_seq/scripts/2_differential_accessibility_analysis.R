@@ -18,6 +18,7 @@ txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
 # Usage: Rscript 4_peak_annotation_and_functional_enrichment.R hsc_cfue
 args = commandArgs(trailingOnly=TRUE)
 contrast = args[1]
+contrast = "hsc_cfue"
 
 # ****************** FIND DIFFERENTIAL ACCESSIBILE REGIONS ********************
 
@@ -84,8 +85,7 @@ if (file.exists(outdir) == FALSE) {
 diff_acc_file = paste("ATAC_seq/data/output_data/differential_accessibility/",contrast,"/",contrast,"_diff_acc.csv", sep="")
 res = read.table(diff_acc_file, sep=",", header=TRUE)
 
-# get the top 100 differentially accessible peaks by FDR for annotation
-top_peaks = res[order(res$FDR),][1:100,]
+# peak annotation
 peaks.gr = GRanges(seqnames=res$seqnames, ranges=IRanges(res$start, res$end), strand=res$strand)
 bed.annot = annotatePeak(peaks.gr, tssRegion=c(-3000, 3000),TxDb=txdb, annoDb="org.Mm.eg.db")
 annot_peaks = as.data.frame(bed.annot)
@@ -139,8 +139,15 @@ if (file.exists(func_outdir) == FALSE) {
   dir.create(func_outdir,recursive=TRUE)
 }
 
+# get top 500 most significantly differentially accessible upregulated and downregulated peaks 
+annot_peaks$Fold = as.numeric(annot_peaks$Fold)
+annot_up = annot_peaks[annot_peaks$Fold > 0,]
+upregulated_peaks = annot_up[order(annot_up$FDR),][1:500,]
+annot_down = annot_peaks[annot_peaks$Fold < 0,]
+downregulated_peaks = annot_down[order(annot_down$FDR),][1:500,]
+
 # Find enriched pathways
-pathway.reac <- enrichPathway(as.data.frame(annot_peaks)$geneId, organism="mouse")
+pathway.reac <- enrichPathway(as.data.frame(top_annot_peaks)$geneId, organism="mouse")
 result_file = paste(func_outdir,"/",contrast,"_enriched_pathways.tsv", sep="")
 write.table(pathway.reac, result_file,
             append = FALSE,
@@ -149,10 +156,6 @@ write.table(pathway.reac, result_file,
             row.names = FALSE,
             col.names = TRUE,
             fileEncoding = "")
-
-# get peaks with differential accessibility
-upregulated_peaks = annot_peaks[annot_peaks$FDR < 0.05 & annot_peaks$Fold > 0,]
-downregulated_peaks = annot_peaks[annot_peaks$FDR < 0.05 & annot_peaks$Fold < 0,]
 
 # Find enriched GO terms for Molecular Function
 upregulated_mf <- enrichGO(as.data.frame(upregulated_peaks)$geneId, org.Mm.eg.db, ont = "MF")
@@ -193,3 +196,4 @@ write.table(downregulated_bp, result_file,
             row.names = FALSE,
             col.names = TRUE,
             fileEncoding = "")
+
