@@ -18,7 +18,6 @@ txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
 # Usage: Rscript 4_peak_annotation_and_functional_enrichment.R hsc_cfue
 args = commandArgs(trailingOnly=TRUE)
 contrast = args[1]
-contrast = "hsc_cfue"
 
 # ****************** FIND DIFFERENTIAL ACCESSIBILE REGIONS ********************
 
@@ -147,7 +146,7 @@ annot_down = annot_peaks[annot_peaks$Fold < 0,]
 downregulated_peaks = annot_down[order(annot_down$FDR),][1:500,]
 
 # Find enriched pathways
-pathway.reac <- enrichPathway(as.data.frame(top_annot_peaks)$geneId, organism="mouse")
+pathway.reac <- enrichPathway(as.data.frame(annot_peaks)$geneId, organism="mouse")
 result_file = paste(func_outdir,"/",contrast,"_enriched_pathways.tsv", sep="")
 write.table(pathway.reac, result_file,
             append = FALSE,
