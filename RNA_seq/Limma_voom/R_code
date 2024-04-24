@@ -1,1 +1,189 @@
+---
+title: "LV_code_final"
+author: "Courtney"
+date: "2024-04-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load libraries
+library(limma)
+library(Glimma)
+library(edgeR)
+library(Mus.musculus)
+```
+
+HSC vs. CFUE
+Before reading in these files, I used excel to remove all the decimals from the ensembl id's that indicated the version # -- keeping these hindered the ability to add annotations
+
+```{r}
+# Read the TSV file
+HSC1_data <- read.table("ENCFF064MKY.tsv", header = TRUE, sep = "\t")
+HSC1_counts <- HSC1_data[, c("gene_id", "expected_count")]
+write.table(HSC1_counts, "HSC1_counts.tsv", sep = "\t", quote = FALSE, row.names = FALSE)
+
+HSC2_data <- read.table("ENCFF247FEJ.tsv", header = TRUE, sep = "\t")
+HSC2_counts <- HSC2_data[, c("gene_id", "expected_count")]
+write.table(HSC2_counts, "HSC2_counts.tsv", sep = "\t", quote = FALSE, row.names = FALSE)
+
+CFUE1_data <- read.table("ENCFF655LMK.tsv", header = TRUE, sep = "\t")
+
+CFUE1_counts <- CFUE1_data[, c("gene_id", "expected_count")]
+write.table(CFUE1_counts, "CFUE1_counts.tsv", sep = "\t", quote = FALSE, row.names = FALSE)
+
+CFUE2_data <- read.table("ENCFF667IDY.tsv", header = TRUE, sep = "\t")
+CFUE2_counts <- CFUE2_data[, c("gene_id", "expected_count")]
+write.table(CFUE2_counts, "CFUE2_counts.tsv", sep = "\t", quote = FALSE, row.names = FALSE)
+
+x <- readDGE(files = c("HSC1_counts.tsv", "HSC2_counts.tsv", "CFUE1_counts.tsv", "CFUE2_counts.tsv"))
+
+
+samplenames <- substring(colnames(x), 29, nchar(colnames(x)))
+samplenames
+
+colnames(x) <- samplenames
+group <- as.factor(c("HSC", "HSC", "CFUE", "CFUE"))
+x$samples$group <- group
+x$samples
+
+counts <- x$counts
+x$counts
+
+# Add annotations
+library("org.Mm.eg.db")
+geneid <- rownames(x)
+head(geneid)
+genes <- AnnotationDbi::select(org.Mm.eg.db, keys = geneid, keytype = "ENSEMBL", columns = c("ENSEMBL","SYMBOL","GENENAME"))
+head(genes)
+
+genes <- genes[!duplicated(genes$ENSEMBL),]
+
+x$genes <- genes
+
+
+# Pre-processing - transformations
+cpm <- cpm(x)
+lcpm <- cpm(x, log=TRUE)
+
+L <- mean(x$samples$lib.size) * 1e-6
+M <- median(x$samples$lib.size) * 1e-6
+c(L, M)
+
+summary(lcpm)
+
+# Remove lowly expressed genes
+table(rowSums(x$counts==0)==4)
+
+keep.exprs <- filterByExpr(x, group=group)
+x <- x[keep.exprs,, keep.lib.sizes=FALSE]
+dim(x)
+
+# Raw vs filtered for lowly expressed genes figure
+lcpm.cutoff <- log2(10/M + 2/L)
+library(RColorBrewer)
+nsamples <- ncol(x)
+col <- brewer.pal(nsamples, "Paired")
+par(mfrow=c(1,2))
+plot(density(lcpm[,1]), col=col[1], lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="A. Raw data", xlab="Log-cpm")
+abline(v=lcpm.cutoff, lty=3)
+for (i in 2:nsamples){
+  den <- density(lcpm[,i])
+  lines(den$x, den$y, col=col[i], lwd=2)
+}
+legend("topright", samplenames, text.col=col, bty="n")
+lcpm <- cpm(x, log=TRUE)
+plot(density(lcpm[,1]), col=col[1], lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="B. Filtered data", xlab="Log-cpm")
+abline(v=lcpm.cutoff, lty=3)
+for (i in 2:nsamples){
+  den <- density(lcpm[,i])
+  lines(den$x, den$y, col=col[i], lwd=2)
+}
+legend("topright", samplenames, text.col=col, bty="n")
+
+
+# Normalizing gene expression distributions
+x <- calcNormFactors(x, method = "TMM")
+x$samples$norm.factors
+
+# Visual of effect of normalization
+x2 <- x
+x2$samples$norm.factors <- 1
+x2$counts[,1] <- ceiling(x2$counts[,1]*0.05)
+x2$counts[,2] <- x2$counts[,2]*5
+
+par(mfrow=c(1,2))
+lcpm <- cpm(x2, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="A. Example: Unnormalised data",ylab="Log-cpm")
+x2 <- calcNormFactors(x2)  
+x2$samples$norm.factors
+
+lcpm <- cpm(x2, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="B. Example: Normalised data",ylab="Log-cpm")
+
+# Design matrix and contrast 
+design <- model.matrix(~0+group)
+colnames(design) <- gsub("group", "", colnames(design))
+design
+
+contr.matrix <- makeContrasts(
+  HSCvsCFUE = HSC-CFUE, 
+  levels = colnames(design))
+contr.matrix
+
+# Limma voom
+par(mfrow=c(1,2))
+v <- voom(x, design, plot=TRUE)
+v
+
+vfit <- lmFit(v, design)
+vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
+efit <- eBayes(vfit)
+plotSA(efit, main="Final model: Mean-variance trend")
+
+# Differentially expressed genes 
+summary(decideTests(efit))
+
+# For stricter fit via the treat method
+tfit <- treat(vfit, lfc=1)
+dt <- decideTests(tfit)
+summary(dt)
+
+tfit
+
+# Due to the stricter fit, less genes are called as differentially expressed
+
+hsc.v.cfue <- topTreat(tfit, coef=1, n=Inf)
+head(hsc.v.cfue)
+
+# MD interactive plot
+plotMD(tfit, column=1, status=dt[,1], main=colnames(tfit)[1], 
+      xlim=c(-8,13))
+
+# MD plot plus annotations
+glMDPlot(tfit, coef=1, status=dt, main=colnames(tfit)[1],
+         side.main="ENSEMBL", counts=lcpm, groups=group, launch=FALSE)
+
+# Annotation heat map of top differentially expressed genes
+dev.off()
+dev.new()
+library(gplots)
+hsc.v.cfue.topgenes <- hsc.v.cfue$ENSEMBL[1:100]
+i <- which(v$genes$ENSEMBL %in% hsc.v.cfue.topgenes)
+mycol <- colorpanel(1000,"blue","white","red")
+heatmap.2(lcpm[i,], scale="row",
+          labRow=v$genes$SYMBOL[i], labCol=group, 
+          col=mycol, trace="none", density.info="none", 
+          margin=c(8,6), lhei=c(2,10), dendrogram="column")
+
+```
+
+# GO Analysis
 
